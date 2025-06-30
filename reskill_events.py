@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 import requests
 from datetime import date
+from datetime import datetime
+import csv
 
 #extracting today's date
 today = date.today()
@@ -8,7 +10,7 @@ date_str = today.strftime("%Y-%m-%d")
 print("Today's date:", date_str)
 
 def scrape():
-    site_link = 'https://reskill.com/allevents'
+    site_link = 'https://reskilll.com/allevents'
 
     data = requests.get(site_link)
     data = BeautifulSoup(data.text, "html.parser")
@@ -18,7 +20,7 @@ page = scrape()
 
 events_listed = []
 try:
-    events = page.find_all(class_="eventtopic eventName pb-2")
+    events = page.find_all(class_="eventtopic eventName pb-2 text-decoration-none")
     for text in events:
         get_event = text.get_text()
 
@@ -112,4 +114,19 @@ for i in range(count_live):
 for event_full_info in event_full_detail:
     print(event_full_info)
     print()
-    
+
+
+# Writing to CSV file
+save_csv =  input('Do you want to save the events list in csv file? (y/n):')
+
+if save_csv.lower() == 'y':
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"live_events_{timestamp}.csv"
+    with open(filename, mode='w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Event Name', 'Event Date', 'Event Link'])
+        for i in range(count_live):
+            writer.writerow([events_name[i], live_events_date[i], events_link[i]])
+    print(f"Events saved to {filename}")
+else:
+    print("Events not saved to csv file.")
