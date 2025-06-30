@@ -88,3 +88,28 @@ for i in range(len(events_date)):
 
 print(f"\nTotal live events today: {count_live}")
 
+events_link = []
+try:
+    events = page.find_all('a', class_="text-decoration-none registerevent")
+
+    Counter = 0
+    for ev in events:
+        events_link.append(ev['href'])
+        Counter += 1
+        if Counter == count_live:
+            break
+        else:
+            pass
+except:
+    message = f"not found !"
+    print(message)
+
+event_full_detail = []
+for i in range(count_live):
+    add_both = f"{events_name[i]} on {live_events_date[i]} - {events_link[i]}"
+    event_full_detail.append(add_both)
+
+for event_full_info in event_full_detail:
+    print(event_full_info)
+    print()
+    
